@@ -57,17 +57,9 @@ jobs:
           - FFMPEG
         # name: ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}
         name:  # each entry must have a matching block in the "include" section below
-          - Alpine-aarch64
-          - Alpine-x86_64
-          - Darwin-arm64
-          - Darwin-x86_64
-          - FreeBSD-aarch64
-          - FreeBSD-amd64
           - Linux-aarch64
-          - Linux-ppc64le
           - Linux-x86_64
           - Windows-AMD64
-          - Windows-ARM64
         include:
           - name: Alpine-aarch64
             os: ubuntu-24.04-arm
@@ -656,12 +648,12 @@ jobs:
     name: Create Release
     if:
       needs.release-setup.outputs.publish_release == 'true' &&
-      startsWith(github.repository, 'LizardByte/')
+      startsWith(github.repository, 'jacksonpate/')
     needs:
       - release-setup
       - build
     permissions:
-      contents: read
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
@@ -678,10 +670,9 @@ jobs:
         with:
           allowUpdates: false
           body: ${{ needs.release-setup.outputs.release_body }}
-          draft: true
+          draft: false
           generateReleaseNotes: ${{ needs.release-setup.outputs.release_generate_release_notes }}
           name: ${{ needs.release-setup.outputs.release_tag }}
           prerelease: true
           tag: ${{ needs.release-setup.outputs.release_tag }}
-          token: ${{ secrets.GH_BOT_TOKEN }}
-          virustotal_api_key: ${{ secrets.VIRUSTOTAL_API_KEY }}
+          token: ${{ secrets.GITHUB_TOKEN }}
